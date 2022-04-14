@@ -71,6 +71,7 @@ public class GameManager : MonoBehaviour
             case States.Victory:
                 Debug.Log("All bricks have been destroyed");
                 GameOverTxt.text = "All bricks have been destroyed"; // Changing the text that will be displayed
+
                 break;
             default:
                 gameState = States.GameOver;

@@ -1,3 +1,4 @@
+using System.Collections; //To be able to use IENumerators/Coroutines
 using UnityEngine;
 using TMPro; //To be able to use text mesh pro
 
@@ -44,7 +45,7 @@ public class GameManager : MonoBehaviour
         totalNumberOfBricks = GameObject.FindGameObjectsWithTag("Bricks").Length; // Get the total number of bricks present in the scene
 
         Debug.Log("Number of bricks : " + totalNumberOfBricks);
-        gameState = States.Preparation;
+        gameState = States.Aiming; //Change the starting state to Aim State
     }
 
 
@@ -56,6 +57,7 @@ public class GameManager : MonoBehaviour
         if (totalNumberOfBricks == 0) // If all the bricks have been destroyed 
         {
             gameState = States.Victory;
+            //StartCoroutine(ChangeStatewithTimeGap(States.Victory));
             GameOver();
         }
     }
@@ -84,5 +86,11 @@ public class GameManager : MonoBehaviour
 
         //Go to the gameover scene or show a game over panel
 
+    }
+
+    IEnumerator ChangeStatewithTimeGap(States stateToChange)
+    {
+        yield return new WaitForSeconds(0.1f); //Wait for 0.1 seconds
+        gameState = stateToChange; //change state to the state defined in the call of the function
     }
 }

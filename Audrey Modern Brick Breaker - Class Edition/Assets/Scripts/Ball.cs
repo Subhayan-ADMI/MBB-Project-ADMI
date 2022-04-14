@@ -47,7 +47,7 @@ public class Ball : MonoBehaviour
 
                 GameManager.instance.IsBallOut = true; //Tell the game manger that the ball went below the bottom line
 
-                GameManager.instance.gameState = GameManager.States.Preparation;
+                GameManager.instance.gameState = GameManager.States.Aiming;
 
             }
 

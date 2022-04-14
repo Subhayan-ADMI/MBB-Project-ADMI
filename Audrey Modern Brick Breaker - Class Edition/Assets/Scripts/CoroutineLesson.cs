@@ -61,14 +61,14 @@ public class CoroutineLesson : MonoBehaviour
         {
             squareColor.a = alpha;
             squareSprite.material.color = squareColor;
-            yield return new WaitForSeconds(0.5f); //Wait for 1 second in real time
+            yield return new WaitForSeconds(0.5f); //Wait for 0.5 second in real time
         }
 
     }
 
     IEnumerator PrintStuff()
     {
-        yield return new WaitForSeconds(5f); //Wait for 1 second in real time
+        yield return new WaitForSeconds(5f); //Wait for 5 seconds in real time
 
         Debug.Log("Hello I am Printing");
     }

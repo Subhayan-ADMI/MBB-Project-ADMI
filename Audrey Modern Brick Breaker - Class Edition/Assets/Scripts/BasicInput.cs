@@ -40,20 +40,24 @@ public class BasicInput : MonoBehaviour
         locationOfMouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         locationOfMouse.z = 0f; //Set the z coordinate of the mouse position that we got to 0
 
-        if (Input.GetMouseButtonDown(0))
+        if (GameManager.instance.gameState == GameManager.States.Aiming)
         {
-            StartDrag(locationOfMouse); //Call the start drag funtion and pass the location of mouse vector as parameter
-        }
+            if (Input.GetMouseButtonDown(0))
+            {
+                StartDrag(locationOfMouse); //Call the start drag funtion and pass the location of mouse vector as parameter
+            }
 
-        if (Input.GetMouseButton(0))
-        {
-            ContinueDrag(locationOfMouse); //Call the ContinueDrag function and pass the location of mouse vector as parameter
-        }
+            if (Input.GetMouseButton(0))
+            {
+                ContinueDrag(locationOfMouse); //Call the ContinueDrag function and pass the location of mouse vector as parameter
+            }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            EndDrag(); //Call the EndDrag function
+            if (Input.GetMouseButtonUp(0))
+            {
+                EndDrag(); //Call the EndDrag function
+            }
         }
+       
     }
 
     void StartDrag (Vector3 positionInWorldData)
@@ -98,21 +102,27 @@ public class BasicInput : MonoBehaviour
 
         //We should calculate the displacement vector between our start point and where our finger is now
         Vector3 directionOfDrag = endDragPosition - startDragPosition;
+        directionOfDrag.Normalize();// Get the direction of the shooting line, not the magnitude
 
         //Launch the balls
         if (GameManager.instance.IsBallOut == true && GameManager.instance.gameState != GameManager.States.GameOver) //We verify that there's no ball in the scene
-        LaunchBall(directionOfDrag);
+        StartCoroutine(LaunchBall(directionOfDrag));
     }
 
 
-    void LaunchBall(Vector3 direction)
+    IEnumerator LaunchBall(Vector3 direction)
     {
         GameManager.instance.gameState = GameManager.States.Shooting; //change the state to shooting
 
         Debug.Log("Turnsleft : " + GameManager.instance.TurnsLeft);
 
-        var launchedBall = Instantiate(ball, transform.position, Quaternion.identity);
-        launchedBall.GetComponent<Rigidbody2D>().AddForce(-direction * shootForce, ForceMode2D.Impulse);
+        for (int i = 0; i < 10; i++)
+        {
+            var launchedBall = Instantiate(ball, transform.position, Quaternion.identity);
+            launchedBall.GetComponent<Rigidbody2D>().AddForce(-direction * shootForce, ForceMode2D.Impulse);
+            yield return new WaitForSeconds(0.1f);
+        }
+        
     }
     
 

@@ -26,6 +26,11 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI GameOverTxt; // Reference to the game over text game object
 
+    #region Timer Variables
+    public bool TimerIsRunning = false;
+    public float timeRemaining;
+    #endregion
+
 
     private void Awake()
     {
@@ -45,7 +50,42 @@ public class GameManager : MonoBehaviour
         totalNumberOfBricks = GameObject.FindGameObjectsWithTag("Bricks").Length; // Get the total number of bricks present in the scene
 
         Debug.Log("Number of bricks : " + totalNumberOfBricks);
-        gameState = States.Aiming; //Change the starting state to Aim State
+        //gameState = States.Aiming; //Change the starting state to Aim State
+        
+        StartCoroutine(StartGame());
+
+
+    }
+
+    void Update()
+    {
+        if (TimerIsRunning)
+        {
+            if (timeRemaining > 0)
+            {
+                timeRemaining -= Time.deltaTime; // reduce the value of the timer at each frame
+                Debug.Log("Time before start : " + timeRemaining);
+            }
+
+            else // Once the timer hits zero, change state and turn the timer of
+            {
+                Debug.Log("Time's up !");
+                timeRemaining = 0;
+                TimerIsRunning = false;
+                StartCoroutine(ChangeStatewithTimeGap(States.Aiming));
+            }
+        }
+    }
+
+
+
+    IEnumerator StartGame()
+    {
+        Debug.Log("Can't shoot yet");
+        yield return new WaitForSeconds(3f);
+        StartCoroutine(ChangeStatewithTimeGap(States.Aiming));
+        Debug.Log("Can shoot now");
+
     }
 
 
@@ -57,13 +97,14 @@ public class GameManager : MonoBehaviour
         if (totalNumberOfBricks == 0) // If all the bricks have been destroyed 
         {
             gameState = States.Victory;
-            //StartCoroutine(ChangeStatewithTimeGap(States.Victory));
-            GameOver();
+            StartCoroutine(ChangeStatewithTimeGap(States.Victory));
+            StartCoroutine(GameOver());
         }
     }
 
-    public void GameOver()
+    public IEnumerator GameOver()
     {
+        yield return new WaitForSeconds(0.2f);
        switch (gameState)
         {
             case States.Preparation:
@@ -84,13 +125,15 @@ public class GameManager : MonoBehaviour
         GameOverTxt.gameObject.SetActive(true); // When the game is over we show a text
 
         Time.timeScale = 0.1f;
+        yield return new WaitForSeconds(0.5f);
+        Time.timeScale = 1;
 
         //Go to the gameover scene or show a game over panel
-
     }
 
-    IEnumerator ChangeStatewithTimeGap(States stateToChange)
+    public IEnumerator ChangeStatewithTimeGap(States stateToChange)
     {
+        
         yield return new WaitForSeconds(0.1f); //Wait for 0.1 seconds
         gameState = stateToChange; //change state to the state defined in the call of the function
     }

@@ -40,18 +40,19 @@ public class Ball : MonoBehaviour
             Debug.Log("Ball out");
             GameManager.instance.TurnsLeft--; //We reduce the total of turns we have left
             if (GameManager.instance.TurnsLeft == 0)
-                GameManager.instance.GameOver(); //When all the turns have been played, it is game over 
+                StartCoroutine(GameManager.instance.GameOver()); //When all the turns have been played, it is game over 
             else
             {
 
 
                 GameManager.instance.IsBallOut = true; //Tell the game manger that the ball went below the bottom line
 
-                GameManager.instance.gameState = GameManager.States.Aiming;
+                StartCoroutine(GameManager.instance.ChangeStatewithTimeGap(GameManager.States.Aiming));
 
             }
 
-            Destroy(this.gameObject); //Destroy the ball when it goes out of bounds
+            //Destroy(this.gameObject); //Destroy the ball when it goes out of bounds
+            gameObject.SetActive(false);
         }
     }
 

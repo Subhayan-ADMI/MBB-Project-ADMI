@@ -112,18 +112,40 @@ public class BasicInput : MonoBehaviour
 
     IEnumerator LaunchBall(Vector3 direction)
     {
-        GameManager.instance.gameState = GameManager.States.Shooting; //change the state to shooting
+        StartCoroutine(GameManager.instance.ChangeStatewithTimeGap(GameManager.States.Shooting)); //change the state to shooting
 
         Debug.Log("Turnsleft : " + GameManager.instance.TurnsLeft);
 
         for (int i = 0; i < 10; i++)
         {
-            var launchedBall = Instantiate(ball, transform.position, Quaternion.identity);
+            /*var launchedBall = Instantiate(ball, transform.position, Quaternion.identity);
+            launchedBall.GetComponent<Rigidbody2D>().AddForce(-direction * shootForce, ForceMode2D.Impulse);
+            yield return new WaitForSeconds(0.1f);*/
+
+            // using Pooling system
+            GameObject launchedBall = PoolManager.Instance.GetBullet();
+            launchedBall.transform.position = transform.position + new Vector3(0, 0.4f, 0); // Put the ball 0.4 cm above the cannon
+            yield return null;
             launchedBall.GetComponent<Rigidbody2D>().AddForce(-direction * shootForce, ForceMode2D.Impulse);
             yield return new WaitForSeconds(0.1f);
         }
+
+        // Change Cannon position after shooting 
+        StartCoroutine(ChangeCannonPosition());
         
     }
-    
+
+    IEnumerator ChangeCannonPosition()
+    {
+
+        // Change Player position and go back to aiming state
+        float randomXPosition = Random.Range(-2.5f, 2.5f); // Generate a random value between -2.5 and 2.5
+        yield return new WaitForSeconds(0.2f); // Wait 0.2 seconds
+        transform.position = new Vector3(randomXPosition, transform.position.y, 0); // Change the position of the cannon
+        StartCoroutine(GameManager.instance.ChangeStatewithTimeGap(GameManager.States.Aiming)); //change the state to aiming
+
+
+    }
+
 
 }

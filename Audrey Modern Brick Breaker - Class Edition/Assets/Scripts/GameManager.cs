@@ -1,5 +1,6 @@
 using System.Collections; //To be able to use IENumerators/Coroutines
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro; //To be able to use text mesh pro
 
 public class GameManager : MonoBehaviour
@@ -18,13 +19,18 @@ public class GameManager : MonoBehaviour
 
     public States gameState;
 
-    int totalNumberOfBricks;
+    int remainingBricks;
+
+    public int totalNumberOfBricks;
+
 
     public bool IsBallOut = true;
 
     public int TurnsLeft; //The number of turns we have
 
     public TextMeshProUGUI GameOverTxt; // Reference to the game over text game object
+
+    public TextMeshProUGUI AnnouncerTxt; // Reference to the Announcer text game object
 
     #region Timer Variables
     public bool TimerIsRunning = false;
@@ -48,6 +54,7 @@ public class GameManager : MonoBehaviour
     {
         GameOverTxt.gameObject.SetActive(false);
         totalNumberOfBricks = GameObject.FindGameObjectsWithTag("Bricks").Length; // Get the total number of bricks present in the scene
+        remainingBricks = totalNumberOfBricks;
 
         Debug.Log("Number of bricks : " + totalNumberOfBricks);
         //gameState = States.Aiming; //Change the starting state to Aim State
@@ -82,7 +89,17 @@ public class GameManager : MonoBehaviour
     IEnumerator StartGame()
     {
         Debug.Log("Can't shoot yet");
-        yield return new WaitForSeconds(3f);
+        AnnouncerTxt.text = "3...";
+        yield return new WaitForSeconds(.5f);
+        AnnouncerTxt.text = "2...";
+        yield return new WaitForSeconds(.5f);
+        AnnouncerTxt.text = "1...";
+        yield return new WaitForSeconds(.5f);
+        AnnouncerTxt.text = "GO";
+        yield return new WaitForSeconds(.2f);
+        AnnouncerTxt.gameObject.SetActive(false);
+
+
         StartCoroutine(ChangeStatewithTimeGap(States.Aiming));
         Debug.Log("Can shoot now");
 
@@ -91,10 +108,10 @@ public class GameManager : MonoBehaviour
 
     public void DestroyBrick()
     {
-        totalNumberOfBricks--; //reduce the number of bricks by one
-        Debug.Log("Number of bricks on the scene = " + totalNumberOfBricks);
+        remainingBricks--; //reduce the number of bricks by one
+        UIManager.Instance.UpdateScore(remainingBricks); // Call the UI Manager and update the score
 
-        if (totalNumberOfBricks == 0) // If all the bricks have been destroyed 
+        if (remainingBricks == 0) // If all the bricks have been destroyed 
         {
             gameState = States.Victory;
             StartCoroutine(ChangeStatewithTimeGap(States.Victory));
@@ -125,10 +142,11 @@ public class GameManager : MonoBehaviour
         GameOverTxt.gameObject.SetActive(true); // When the game is over we show a text
 
         Time.timeScale = 0.1f;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.15f);
         Time.timeScale = 1;
 
         //Go to the gameover scene or show a game over panel
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); // this will load the next scene on the build index
     }
 
     public IEnumerator ChangeStatewithTimeGap(States stateToChange)

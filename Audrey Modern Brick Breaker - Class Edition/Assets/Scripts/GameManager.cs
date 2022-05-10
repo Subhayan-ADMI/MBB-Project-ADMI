@@ -61,7 +61,6 @@ public class GameManager : MonoBehaviour
         
         StartCoroutine(StartGame());
 
-
     }
 
     void Update()
@@ -154,5 +153,20 @@ public class GameManager : MonoBehaviour
         
         yield return new WaitForSeconds(0.1f); //Wait for 0.1 seconds
         gameState = stateToChange; //change state to the state defined in the call of the function
+    }
+
+    public void ResetBalls()
+    {
+        if (gameState == States.Shooting)
+        {
+            var balls = GameObject.FindGameObjectsWithTag("Ball");
+            foreach (var ball in balls)
+            {
+                ball.SetActive(false);
+            }
+            StartCoroutine(ChangeStatewithTimeGap(States.Aiming));
+            IsBallOut = true;
+
+        }
     }
 }

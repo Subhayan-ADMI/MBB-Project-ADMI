@@ -116,7 +116,7 @@ public class BasicInput : MonoBehaviour
 
         Debug.Log("Turnsleft : " + GameManager.instance.TurnsLeft);
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < PoolManager.Instance.ballAmount; i++)
         {
             /*var launchedBall = Instantiate(ball, transform.position, Quaternion.identity);
             launchedBall.GetComponent<Rigidbody2D>().AddForce(-direction * shootForce, ForceMode2D.Impulse);
@@ -142,7 +142,7 @@ public class BasicInput : MonoBehaviour
         float randomXPosition = Random.Range(-2.5f, 2.5f); // Generate a random value between -2.5 and 2.5
         yield return new WaitForSeconds(0.2f); // Wait 0.2 seconds
         transform.position = new Vector3(randomXPosition, transform.position.y, 0); // Change the position of the cannon
-        StartCoroutine(GameManager.instance.ChangeStatewithTimeGap(GameManager.States.Aiming)); //change the state to aiming
+        
 
 
     }

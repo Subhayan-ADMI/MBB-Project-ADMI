@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
 
     public TextMeshProUGUI scoreTxt; // reference to the score text 
 
+
     private void Awake()
     {
         if (Instance == null)
@@ -18,12 +19,15 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
     }
 
-    
+
+
 
     public void UpdateScore(int remainingBricks)
     {
         scoreTxt.text = remainingBricks.ToString() + " / " + GameManager.instance.totalNumberOfBricks;
+        
     }
+
 
     public void PauseGame()
     {

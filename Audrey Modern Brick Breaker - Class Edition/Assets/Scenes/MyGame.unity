@@ -6116,7 +6116,7 @@ MonoBehaviour:
   gameState: 0
   totalNumberOfBricks: 0
   IsBallOut: 1
-  TurnsLeft: 50
+  TurnsLeft: 1
   GameOverTxt: {fileID: 1964921372}
   AnnouncerTxt: {fileID: 549760725}
   TimerIsRunning: 0

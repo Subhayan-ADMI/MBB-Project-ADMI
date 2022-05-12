@@ -29,7 +29,6 @@ public class Bricks : MonoBehaviour
 
             if (hits == 0)
             {
-
                 GameManager.instance.DestroyBrick(); //Call the GameManager and reduce the number of bricks
                 Destroy(gameObject); // When there are no more hits left, destroy the brick
             }

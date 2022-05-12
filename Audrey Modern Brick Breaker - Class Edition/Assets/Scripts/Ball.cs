@@ -15,40 +15,38 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+
         Debug.Log("Trigger enters : " + collision.name);
         var balls = GameObject.FindGameObjectsWithTag("Ball");
+        int remainingBalls = balls.Length;
         //check if the ball goes beyond limit
         if (collision.CompareTag("BottomLine"))
         {
-            int remainingBalls = 0;
-            foreach (var ball in balls)
-            {
-                if (ball.activeInHierarchy)
-                    remainingBalls++;
-            }
+            remainingBalls--;
             Debug.Log("Ball out");
-            GameManager.instance.TurnsLeft--; //We reduce the total of turns we have left
-            if (GameManager.instance.TurnsLeft == 0)
-                StartCoroutine(GameManager.instance.GameOver()); //When all the turns have been played, it is game over 
-            else
+            Debug.Log("Number of balls remaining before deactivation " + remainingBalls);
+            // check how many balls are in the scene 
+
+
+            Debug.Log("Remaining Balls on the scene : " + remainingBalls);
+
+            if (remainingBalls == 0) // When the final ball goes beyond the bottom line 
             {
-                // check how many balls are in the scene 
-                
-
-                Debug.Log("Remaining Balls on the scene : "+remainingBalls);
-
-                if (remainingBalls <= 1) // When the final ball goes beyond the bottom line 
+                if (GameManager.instance.TurnsLeft == 0)
                 {
-                    StartCoroutine(GameManager.instance.ChangeStatewithTimeGap(GameManager.States.Aiming));
-                    GameManager.instance.IsBallOut = true;
+                    StartCoroutine(GameManager.instance.ChangeStatewithTimeGap(GameManager.States.GameOver));
                 }
-
+                else
+                {
+                    GameManager.instance.IsBallOut = true;
+                    StartCoroutine(GameManager.instance.ChangeStatewithTimeGap(GameManager.States.Aiming));
+                }
             }
 
-            //Destroy(this.gameObject); //Destroy the ball when it goes out of bounds
-            StartCoroutine(DeactivateGameObject());
         }
+
+        //Destroy(this.gameObject); //Destroy the ball when it goes out of bounds
+        StartCoroutine(DeactivateGameObject());
     }
 
     IEnumerator DeactivateGameObject()

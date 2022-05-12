@@ -130,6 +130,8 @@ public class BasicInput : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
+        GameManager.instance.TurnsLeft--; //We reduce the total of turns we have left
+
         // Change Cannon position after shooting 
         StartCoroutine(ChangeCannonPosition());
         
@@ -142,9 +144,6 @@ public class BasicInput : MonoBehaviour
         float randomXPosition = Random.Range(-2.5f, 2.5f); // Generate a random value between -2.5 and 2.5
         yield return new WaitForSeconds(0.2f); // Wait 0.2 seconds
         transform.position = new Vector3(randomXPosition, transform.position.y, 0); // Change the position of the cannon
-        
-
-
     }
 
 
